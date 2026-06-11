@@ -1,0 +1,11 @@
+[theme]
+base = "light"
+primaryColor = "#c65f28"
+backgroundColor = "#fbf6ee"
+secondaryBackgroundColor = "#fffaf2"
+textColor = "#171411"
+font = "sans serif"
+
+[server]
+fileWatcherType = "none"
+headless = true
