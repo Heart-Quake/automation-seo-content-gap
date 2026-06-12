@@ -10,6 +10,8 @@ import plotly.express as px
 from collections import Counter
 from urllib.parse import urlparse
 
+from automation_seo_theme import apply_automation_seo_theme
+
 # Classes d'exception personnalisées
 class FileProcessingError(Exception):
     """Exception levée lors d'une erreur de traitement de fichier"""
@@ -34,99 +36,60 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS personnalisé pour améliorer l'apparence
-st.markdown("""
+apply_automation_seo_theme()
+
+st.markdown(
+    """
     <style>
-    /* Hiérarchie visuelle */
-    h1, h2, h3, h4, h5, h6 {
-        color: #2BAF9C;  /* Vert du logo */
-    }
-    
-    /* Style spécifique pour les titres de filtres */
-    .filter-title {
-        color: #2BAF9C;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }
+        .filter-title,
+        .section-header,
+        .inline-filter-title {
+            color: var(--yn-accent) !important;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            margin: 0 0 0.45rem;
+        }
 
-    /* Style pour les titres de sections */
-    .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
-        color: #2BAF9C;
-        font-size: 1rem;
-        font-weight: 500;
-    }
-    
-    /* Composants interactifs - Boutons et téléchargements */
-    .stButton > button, .stDownloadButton > button, div[data-testid="stSidebarNav"] button {
-        background-color: #2BAF9C;  /* Vert du logo */
-        color: white;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        border: none;
-        transition: all 0.2s ease;
-    }
-    .stButton > button:hover, .stDownloadButton > button:hover, div[data-testid="stSidebarNav"] button:hover {
-        background-color: #249889;  /* Version plus foncée du vert */
-        transform: translateY(-1px);
-    }
-    
-    /* Tableaux et métriques */
-    .dataframe {
-        font-size: 0.9rem;
-        border-radius: 0.5rem;
-        border: 1px solid #E5E8E8;
-    }
-    .metric-container {
-        background-color: #F8F9F9;
-        padding: 1.25rem;
-        border-radius: 0.5rem;
-        border: 1px solid #E5E8E8;
-    }
-    
-    /* Filtres */
-    .stSlider {
-        padding: 1rem 0;
-    }
-    .stMultiSelect {
-        margin-bottom: 1rem;
-    }
+        .subheader {
+            color: var(--yn-text) !important;
+            font-size: 1.12rem;
+            font-weight: 800;
+            margin: 1.15rem 0 0.65rem;
+        }
 
-    /* Titres des sections */
-    .section-header {
-        color: #249889;
-        font-weight: 600;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }
+        .stButton button[kind="secondary"] {
+            background: transparent !important;
+            border-color: var(--yn-border) !important;
+            color: var(--yn-text) !important;
+        }
 
-    /* Style pour les sélecteurs numériques */
-    [data-testid="stNumberInput"] {
-        background-color: white;
-        border-radius: 0.5rem;
-        border: 1px solid #E5E8E8;
-        padding: 0.5rem;
-    }
-    [data-testid="stNumberInput"] > div {
-        padding: 0.25rem;
-    }
-    [data-testid="stNumberInput"] input {
-        font-size: 0.9rem;
-    }
-    [data-testid="stNumberInput"] label {
-        color: #2BAF9C;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-    
-    /* Ajustement des marges pour les colonnes */
-    [data-testid="column"] {
-        padding: 0.25rem !important;
-    }
+        .stButton button[kind="secondary"]:hover {
+            background: var(--yn-card-hover) !important;
+            border-color: var(--yn-accent) !important;
+            color: var(--yn-text) !important;
+        }
+
+        [data-testid="stDataFrame"] [role="gridcell"],
+        [data-testid="stDataFrame"] [role="columnheader"] {
+            color: var(--yn-text) !important;
+        }
+
+        .stPlotlyChart,
+        [data-testid="stVegaLiteChart"] {
+            background: var(--yn-card) !important;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 760px) {
+            .tool-title {
+                font-size: 2.25rem;
+            }
+        }
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True,
+)
 
 def process_content_gap_file(file):
     """Traite le fichier content gap et retourne un DataFrame nettoyé"""
@@ -1382,7 +1345,7 @@ def get_position_cell_style(value):
     if position <= 3:
         return 'background-color: #D8F3DC; color: #1B4332; font-weight: 600;'
     if position <= 10:
-        return 'background-color: #E9F5DB; color: #2D6A4F; font-weight: 600;'
+        return 'background-color: rgba(76, 235, 166, 0.16); color: #4CEBA6; font-weight: 600;'
     if position <= 20:
         return 'background-color: #FFF3BF; color: #7A4E00; font-weight: 600;'
     if position <= 50:
@@ -1509,15 +1472,15 @@ def render_copy_to_clipboard_button(text_to_copy: str, button_label: str, key: s
         f"""
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
             <button id="copy-btn-{safe_key}" style="
-                background:#2BAF9C;
-                color:#fff;
-                border:none;
+                background:#F7F8F8;
+                color:#0F1011;
+                border:1px solid #F7F8F8;
                 border-radius:8px;
                 padding:8px 12px;
                 font-size:14px;
                 cursor:pointer;
             ">{button_label}</button>
-            <span id="copy-status-{safe_key}" style="font-size:13px;color:#2D6A4F;"></span>
+            <span id="copy-status-{safe_key}" style="font-size:13px;color:#49DCBC;"></span>
         </div>
         <script>
             const encoded = "{encoded_text}";
@@ -1751,7 +1714,7 @@ def display_filtered_results(filtered_df, client_name):
             with col1:
                 # Stratégie
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Stratégie
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1770,7 +1733,7 @@ def display_filtered_results(filtered_df, client_name):
             with col2:
                 # Marque
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Marque
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1786,7 +1749,7 @@ def display_filtered_results(filtered_df, client_name):
             with col3:
                 # Intention
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Intention
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1805,7 +1768,7 @@ def display_filtered_results(filtered_df, client_name):
             with metric_col1:
                 # Volume
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Volume
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1830,7 +1793,7 @@ def display_filtered_results(filtered_df, client_name):
             with metric_col2:
                 # Position
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Position
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1877,7 +1840,7 @@ def display_filtered_results(filtered_df, client_name):
                     st.session_state.ngram_cluster_filter = valid_cluster_selection
 
                 st.markdown("""
-                    <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                    <h6 class="inline-filter-title">
                         Cluster n-gram
                     </h6>
                 """, unsafe_allow_html=True)
@@ -1924,7 +1887,7 @@ def display_filtered_results(filtered_df, client_name):
         
         with tab1:
             st.markdown("""
-                <h6 style='color: #2BAF9C; margin-bottom: 0px; padding-bottom: 0px;'>
+                <h6 class="inline-filter-title">
                     Recherche par keyword
                 </h6>
             """, unsafe_allow_html=True)
@@ -2223,14 +2186,14 @@ def display_strategy_stats(filtered_df):
         styles = [
             dict(selector="th", props=[("font-size", "1.1em"), 
                                      ("text-align", "center"),
-                                     ("background-color", "#f0f2f6"),
-                                     ("color", "#2BAF9C"),
+                                    ("background-color", "#27282A"),
+                                     ("color", "#49DCBC"),
                                      ("font-weight", "bold"),
                                      ("padding", "12px")]),
             dict(selector="td", props=[("text-align", "center"),
                                      ("padding", "8px")]),
             dict(selector="tr:last-child", props=[("font-weight", "bold"),
-                                                ("background-color", "#f0f2f6")])
+                                                ("background-color", "#27282A")])
         ]
         
         # Application du style et affichage
@@ -2255,14 +2218,15 @@ def display_visualizations(filtered_df, client_name):
     
     # Configuration commune pour tous les graphiques
     graph_title_style = {
-        'font': {'size': 16, 'family': 'Arial'},
+        'font': {'size': 16, 'family': 'Arial', 'color': '#F7F8F8'},
         'y': 0.95
     }
     graph_layout = {
         'title_font': graph_title_style['font'],
         'showlegend': True,
-        'paper_bgcolor': 'white',
-        'plot_bgcolor': 'white',
+        'paper_bgcolor': '#27282A',
+        'plot_bgcolor': '#27282A',
+        'font': {'color': '#F7F8F8'},
         'margin': dict(t=50, b=30, l=30, r=30)
     }
     
@@ -2469,19 +2433,20 @@ def create_position_volume_histogram(filtered_df, client_name):
     fig_volume.update_layout(
         title_font_size=20,
         title_font_family="Arial",
-        plot_bgcolor='white',
-        paper_bgcolor='white',
+        plot_bgcolor='#27282A',
+        paper_bgcolor='#27282A',
+        font=dict(color='#F7F8F8'),
         bargap=0.2,
         margin=dict(t=50, b=50, l=50, r=25),
         xaxis=dict(
             title_font_size=14,
             tickfont_size=12,
-            gridcolor='#E5E8E8'
+            gridcolor='#37383A'
         ),
         yaxis=dict(
             title_font_size=14,
             tickfont_size=12,
-            gridcolor='#E5E8E8'
+            gridcolor='#37383A'
         )
     )
     
@@ -2606,11 +2571,22 @@ def main():
     try:
         initialize_session_state()
         
-        # En-tête avec description
-        st.title("🔍 Analyse Content Gap")
+        st.markdown(
+            """
+            <section class="tool-hero">
+                <div class="tool-kicker">Content gap</div>
+                <h1 class="tool-title">Analyse Content Gap</h1>
+                <p class="tool-lead">
+                    Priorise les opportunités SEO depuis des exports Ahrefs ou Semrush,
+                    filtre les requêtes et consolide les quick wins par URL.
+                </p>
+            </section>
+            """,
+            unsafe_allow_html=True,
+        )
         
         # Guide d'utilisation en dropdown dans la zone principale
-        with st.expander("📖 Guide d'utilisation", expanded=False):
+        with st.expander("Guide d'utilisation", expanded=False):
             st.markdown("""
             ## 1. Import des données
             ### Formats acceptés :
@@ -2662,16 +2638,15 @@ def main():
             - Exportez le CSV final
             """)
 
-        with st.expander("🧱 Vue isolée : Consolidation Ahrefs par URL", expanded=False):
+        with st.expander("Consolidation Ahrefs par URL", expanded=False):
             display_ahrefs_consolidation_view()
         
         # Configuration dans la sidebar
         with st.sidebar:
-            st.image("DR_SEO_Header.svg", use_column_width=True)
-            st.header("⚙️ Configuration")
+            st.header("Configuration")
             
             uploaded_files = st.file_uploader(
-                "📤 Importer les fichiers CSV",
+                "Importer les fichiers CSV",
                 accept_multiple_files=True,
                 type=['csv'],
                 help="Supporte Ahrefs/Semrush avec UTF-16 ou UTF-8 (séparateur tabulation, virgule ou point-virgule)"
@@ -2789,7 +2764,7 @@ def main():
                         # Bouton d'action
                         st.markdown("---")
                         if client_name:
-                            if st.button("🚀 Lancer l'analyse", type="primary"):
+                            if st.button("Lancer l'analyse", type="primary"):
                                 process_and_store_data(
                                     uploaded_files,
                                     client_name,
